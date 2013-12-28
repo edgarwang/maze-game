@@ -1,0 +1,10 @@
+{
+    "name": "MazeGame",
+    "main": "index.html",
+    "window": {
+        "toolbar": true,
+        "resizable": false,
+        "width": 400,
+        "height": 300
+    }
+}
