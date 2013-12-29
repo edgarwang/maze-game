@@ -8,12 +8,30 @@
     <script src="libs/mousetrap.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="maze.js" type="text/javascript" charset="utf-8"></script>
     <style>
-        canvas {
+        .maze-game {
             border: 1px solid black;
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+        .person.face {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+        }
+        .end.flag {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
         }
     </style>
 </head>
 <body>
-    <canvas id="maze-game"></canvas>
+    <div id="maze-game" class="maze-game">
+        <canvas id="maze-zone"></canvas>
+        <img class="person face" src="imgs/person-face.gif" alt="Person"/>
+        <img class="end flag" src="imgs/end-flag.gif" alt="End Flag"/>
+    </div>
+
 </body>
 </html>

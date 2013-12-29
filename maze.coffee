@@ -64,9 +64,13 @@ class MazeGame
     @grid_size = grid_size
     @grids = mazeGenerator(width, height)
 
+
+  re_gen_maze: () ->
+    @grids = mazeGenerator(@width, @height)
+
   # For drawing maze in canvas
   drawMaze: () ->
-    @canvas = document.getElementById('maze-game')
+    @canvas = document.getElementById('maze-zone')
     w = @grid_size * @width
     h = @grid_size * @height
     @canvas.setAttribute("width", w)
@@ -75,9 +79,8 @@ class MazeGame
 
     ix = 0
     iy = 0
-    len = @width * @height
     @ctx = @canvas.getContext("2d")
-    @ctx.fillStyle = "#f5f5f5"
+    @ctx.fillStyle = "#f3f3f3"
     @ctx.fillRect(0, 0, @width*@grid_size, @height*@grid_size)
     tmp = 0
     for i in [0..@height-1]
@@ -110,8 +113,76 @@ class MazeGame
     if !(v & 8) # W
       draw(ix, iy, ix, iy2)
 
+class Person
+  constructor: (grids) ->
+    @grids = grids
+    @person = $(".person.face");
+    @pos = [0, 0]
+    @width = grids[0].length
+    @height = grids.length
+    @initShortcuts()
 
+  initShortcuts: () ->
+    Mousetrap.bind('up', () =>
+      @move('up')
+    )
+    Mousetrap.bind('down', () =>
+      @move('down')
+    )
+    Mousetrap.bind('left', () =>
+      @move('left')
+    )
+    Mousetrap.bind('right', () =>
+      @move('right')
+    )
+
+  move: (direction) ->
+    if not @validate_move(direction)
+      return false
+
+    switch direction
+      when "up" then @pos[1]--
+      when "down" then @pos[1]++
+      when "left" then @pos[0]--
+      when "right" then @pos[0]++
+    @person.css("left", "#{@pos[0]*20+2}" + "px" )
+    @person.css("top", "#{@pos[1]*20+2}"+"px")
+
+    if @check_finished()
+      console.log("DONE")
+    return true
+
+  validate_move: (direction) ->
+    mazeNode = @grids[@pos[1]][@pos[0]]
+    switch direction
+      when "up"
+        if @pos[1] == 0
+          return false
+        if (mazeNode & 1) == 0
+          return false
+      when "down"
+        if @pos[1] == @height-1
+          return false
+        if (mazeNode & 2) == 0
+          return false
+      when "right"
+        if @pos[0] == @width-1
+          return false
+        if (mazeNode & 4) == 0
+          return false
+      when "left"
+        if @pos[0] == 0
+          return false
+        if (mazeNode & 8) == 0
+          return false
+    return true
+
+  check_finished: () ->
+    if @pos[0] == @height-1 && @pos[1] == @width-1
+      return true
+    return false
 
 $(document).ready () ->
   mazeGame = new MazeGame(20, 20, 20);
   mazeGame.drawMaze()
+  person = new Person(mazeGame.grids)
