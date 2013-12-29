@@ -9,3 +9,7 @@ Just use arrow keys to move the face to the position of the small flag.
 
 ## Screenshot
 ![](imgs/demo.png)
+
+## License
+All the code in this repo except some external javascript librarys
+are under MIT license.
