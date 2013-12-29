@@ -2,9 +2,9 @@
     "name": "MazeGame",
     "main": "index.html",
     "window": {
-        "toolbar": true,
+        "toolbar": false,
         "resizable": false,
-        "width": 400,
-        "height": 300
+        "width": 405,
+        "height": 405
     }
 }

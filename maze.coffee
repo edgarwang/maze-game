@@ -67,6 +67,8 @@ class MazeGame
 
   re_gen_maze: () ->
     @grids = mazeGenerator(@width, @height)
+    @drawMaze()
+    return @grids
 
   # For drawing maze in canvas
   drawMaze: () ->
@@ -136,6 +138,16 @@ class Person
       @move('right')
     )
 
+  reset: (grids) ->
+    if grids
+      @grids = grids
+    @pos = [0, 0]
+    @drawPerson()
+
+  drawPerson: () ->
+    @person.css("left", "#{@pos[0]*20+2}" + "px" )
+    @person.css("top", "#{@pos[1]*20+2}"+"px")
+
   move: (direction) ->
     if not @validate_move(direction)
       return false
@@ -145,8 +157,8 @@ class Person
       when "down" then @pos[1]++
       when "left" then @pos[0]--
       when "right" then @pos[0]++
-    @person.css("left", "#{@pos[0]*20+2}" + "px" )
-    @person.css("top", "#{@pos[1]*20+2}"+"px")
+
+    @drawPerson()
 
     if @check_finished()
       console.log("DONE")
@@ -179,10 +191,30 @@ class Person
 
   check_finished: () ->
     if @pos[0] == @height-1 && @pos[1] == @width-1
-      return true
+      alert("恭喜！")
     return false
+
 
 $(document).ready () ->
   mazeGame = new MazeGame(20, 20, 20);
   mazeGame.drawMaze()
   person = new Person(mazeGame.grids)
+
+  gui = require('nw.gui')
+  menu = new gui.Menu()
+
+  menu.append(new gui.MenuItem({ label: '还原本迷宫' }))
+  menu.append(new gui.MenuItem({ label: '重新生成迷宫' }))
+
+  menu.items[0].on('click', () ->
+    person.reset()
+  )
+  menu.items[1].on('click', () ->
+    person.reset(mazeGame.re_gen_maze())
+  )
+
+  document.body.addEventListener('contextmenu', (ev) ->
+    ev.preventDefault()
+    menu.popup(ev.x, ev.y)
+    return false
+  )
